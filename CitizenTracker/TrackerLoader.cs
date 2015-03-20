@@ -27,8 +27,9 @@ namespace CitizenTracker
             trackerButton.relativePosition = new Vector2
             (
                 menuButton.relativePosition.x + (menuButton.width / 2.0f) - 18,
-                menuButton.relativePosition.y - menuButton.height - 18
+                menuButton.relativePosition.y + menuButton.height + 48
             );
+			trackerButton.zOrder +=100;
 
             trackerPanel = uiView.AddUIComponent(typeof(TrackerPanel)) as TrackerPanel;
             trackerPanel.relativePosition = new Vector2
