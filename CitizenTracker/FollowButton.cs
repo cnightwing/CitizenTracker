@@ -8,11 +8,12 @@ using ColossalFramework;
 using ColossalFramework.UI;
 using UnityEngine;
 
-
 namespace CitizenTracker
 {
-    public class TrackerButton : UIButton
+    public class FollowButton : UIButton
     {
+        public bool isToggled = false;
+
         public override void Start()
         {
             this.width = 46;
@@ -22,10 +23,10 @@ namespace CitizenTracker
             this.focusedBgSprite = "InfoIconBaseNormal";
             this.hoveredBgSprite = "InfoIconBaseNormal";
             this.pressedBgSprite = "InfoIconBaseNormal";
-            this.normalFgSprite = "InfoIconHealth";
-            this.focusedFgSprite = "InfoIconHealth";
-            this.hoveredFgSprite = "InfoIconHealth";
-            this.pressedFgSprite = "InfoIconHealth";
+            this.normalFgSprite = "";
+            this.focusedFgSprite = "";
+            this.hoveredFgSprite = "";
+            this.pressedFgSprite = "";
         }
     }
 }

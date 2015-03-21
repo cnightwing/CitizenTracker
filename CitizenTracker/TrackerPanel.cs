@@ -14,6 +14,8 @@ namespace CitizenTracker
     {
         public override void Start()
         {
+            this.isVisible = false;
+
             this.backgroundSprite = "InfoPanelBack";
             this.width = 300;
             this.height = 300;

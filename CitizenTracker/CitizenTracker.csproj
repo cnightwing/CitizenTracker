@@ -54,10 +54,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FollowButton.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="CitizenTracker.cs" />
     <Compile Include="TrackerButton.cs" />
-    <Compile Include="TrackerLoader.cs" />
+    <Compile Include="Loader.cs" />
     <Compile Include="TrackerPanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
