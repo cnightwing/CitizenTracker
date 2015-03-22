@@ -25,5 +25,10 @@ namespace CitizenTracker
             this.autoLayoutPadding = new RectOffset(0,0,0,0);
             this.autoLayout = true;
         }
+
+        public override void Update()
+        {
+
+        }
     }
 }

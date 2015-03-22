@@ -61,14 +61,20 @@ namespace CitizenTracker
         public void ToggleFollow(UIComponent component, UIMouseEventParameter eventParam)
         {
             UIComponent trackerPanel = uiView.FindUIComponent("TrackerPanel");
-            
+            FollowedPanel[] followedPanels = trackerPanel.GetComponentsInChildren<FollowedPanel>();
 
             InstanceID instanceID = WorldInfoPanel.GetCurrentInstanceID();
             if (Loader.citizenList.Contains(instanceID))
             {
                 Loader.citizenList.Remove(instanceID);
                 Log.Message("Unfollowing " + instanceID.ToString());
-                //How do I remove them?
+                foreach (FollowedPanel followedPanel in followedPanels)
+                {
+                    if (followedPanel.id == instanceID)
+                    {
+                        trackerPanel.RemoveUIComponent(followedPanel);
+                    }
+                }
             }
             else
             {
