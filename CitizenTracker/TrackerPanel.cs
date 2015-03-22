@@ -17,7 +17,7 @@ namespace CitizenTracker
             this.isVisible = false;
 
             this.backgroundSprite = "InfoPanelBack";
-            this.width = 300;
+            this.width = 600;
             this.height = 300;
 
             this.autoLayoutDirection = LayoutDirection.Vertical;

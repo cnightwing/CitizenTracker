@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FollowButton.cs" />
+    <Compile Include="FollowedPanel.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="CitizenTracker.cs" />
     <Compile Include="TrackerButton.cs" />

@@ -13,6 +13,8 @@ namespace CitizenTracker
 {
     public class TrackerButton : UIButton
     {
+        private static UIView uiView = GameObject.FindObjectOfType<UIView>();
+
         public override void Start()
         {
             this.width = 46;
@@ -26,6 +28,42 @@ namespace CitizenTracker
             this.focusedFgSprite = "InfoIconHealth";
             this.hoveredFgSprite = "InfoIconHealth";
             this.pressedFgSprite = "InfoIconHealth";
+
+            this.eventClick += TogglePanel;
+        }
+
+        public void TogglePanel(UIComponent component, UIMouseEventParameter eventParam)
+        {
+            UIComponent trackerPanel = uiView.FindUIComponent("TrackerPanel");
+            trackerPanel.isVisible = !trackerPanel.isVisible;
+            if (trackerPanel.isVisible)
+            {
+                this.normalBgSprite = "InfoIconBaseFocused";
+                this.focusedBgSprite = "InfoIconBaseFocused";
+                this.hoveredBgSprite = "InfoIconBaseFocused";
+                this.pressedBgSprite = "InfoIconBasePressed";
+                this.normalFgSprite = "InfoIconHealth";
+                this.focusedFgSprite = "InfoIconHealth";
+                this.hoveredFgSprite = "InfoIconHealth";
+                this.pressedFgSprite = "InfoIconHealth";
+
+                Log.Message("Currently following:");
+                foreach (InstanceID id in Loader.citizenList)
+                {
+                    Log.Message(id.ToString());
+                }
+            }
+            else
+            {
+                this.normalBgSprite = "InfoIconBaseNormal";
+                this.focusedBgSprite = "InfoIconBaseNormal";
+                this.hoveredBgSprite = "InfoIconBaseNormal";
+                this.pressedBgSprite = "InfoIconBaseNormal";
+                this.normalFgSprite = "InfoIconHealth";
+                this.focusedFgSprite = "InfoIconHealth";
+                this.hoveredFgSprite = "InfoIconHealth";
+                this.pressedFgSprite = "InfoIconHealth";
+            }
         }
     }
 }
