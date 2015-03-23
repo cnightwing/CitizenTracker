@@ -70,9 +70,9 @@ namespace CitizenTracker
                 Log.Message("Unfollowing " + instanceID.ToString());
                 foreach (FollowedPanel followedPanel in followedPanels)
                 {
-                    if (followedPanel.id == instanceID)
+                    if (followedPanel.ID == instanceID)
                     {
-                        trackerPanel.RemoveUIComponent(followedPanel);
+                        Destroy(followedPanel);
                     }
                 }
             }
@@ -80,8 +80,7 @@ namespace CitizenTracker
             {
                 FollowedPanel newPanel;
                 newPanel = trackerPanel.AddUIComponent(typeof(FollowedPanel)) as FollowedPanel;
-                
-                newPanel.id = instanceID;
+                newPanel.ID = instanceID;
                 Loader.citizenList.Add(instanceID);
                 Log.Message("Following " + instanceID.ToString());
             }

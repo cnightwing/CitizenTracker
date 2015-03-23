@@ -35,8 +35,10 @@ namespace CitizenTracker
         public void TogglePanel(UIComponent component, UIMouseEventParameter eventParam)
         {
             UIComponent trackerPanel = uiView.FindUIComponent("TrackerPanel");
-            trackerPanel.isVisible = !trackerPanel.isVisible;
-            if (trackerPanel.isVisible)
+            UIComponent rightPanel = trackerPanel.parent;
+            UIComponent mainPanel = rightPanel.parent;
+            mainPanel.isVisible = !mainPanel.isVisible;
+            if (mainPanel.isVisible)
             {
                 this.normalBgSprite = "InfoIconBaseFocused";
                 this.focusedBgSprite = "InfoIconBaseFocused";
