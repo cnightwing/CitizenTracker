@@ -25,7 +25,7 @@ namespace CitizenTracker
         public override void Start()
         {
             this.height = 36;
-            this.width = 1086;
+            this.width = 1152;
             this.backgroundSprite = "GenericTabDisabled";
             this.autoLayoutDirection = LayoutDirection.Horizontal;
             this.autoLayoutStart = LayoutStart.BottomLeft;
@@ -41,7 +41,7 @@ namespace CitizenTracker
             
             nameHeader.text = "Citizen";
             nameHeader.autoSize = false;
-            nameHeader.width = 160;
+            nameHeader.width = 150;
             nameHeader.height = 36;
             nameHeader.textAlignment = UIHorizontalAlignment.Left;
             nameHeader.verticalAlignment = UIVerticalAlignment.Middle;
@@ -50,7 +50,7 @@ namespace CitizenTracker
             
             ageeduHeader.text = "Education / Age";
             ageeduHeader.autoSize = false;
-            ageeduHeader.width = 200;
+            ageeduHeader.width = 210;
             ageeduHeader.height = 36;
             ageeduHeader.textAlignment = UIHorizontalAlignment.Left;
             ageeduHeader.verticalAlignment = UIVerticalAlignment.Middle;
@@ -59,7 +59,7 @@ namespace CitizenTracker
             
             homeHeader.text = "Residence";
             homeHeader.autoSize = false;
-            homeHeader.width = 200;
+            homeHeader.width = 210;
             homeHeader.height = 36;
             homeHeader.textAlignment = UIHorizontalAlignment.Left;
             homeHeader.verticalAlignment = UIVerticalAlignment.Middle;
@@ -68,7 +68,7 @@ namespace CitizenTracker
             
             workHeader.text = "Occupation";
             workHeader.autoSize = false;
-            workHeader.width = 240;
+            workHeader.width = 250;
             workHeader.height = 36;
             workHeader.textAlignment = UIHorizontalAlignment.Left;
             workHeader.verticalAlignment = UIVerticalAlignment.Middle;
@@ -77,7 +77,7 @@ namespace CitizenTracker
 
             statusHeader.text = "Status";
             statusHeader.autoSize = false;
-            statusHeader.width = 240;
+            statusHeader.width = 250;
             statusHeader.height = 36;
             statusHeader.textAlignment = UIHorizontalAlignment.Left;
             statusHeader.verticalAlignment = UIVerticalAlignment.Middle;

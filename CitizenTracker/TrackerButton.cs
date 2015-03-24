@@ -50,7 +50,7 @@ namespace CitizenTracker
                 this.pressedFgSprite = "InfoIconHealth";
 
                 Log.Message("Currently following:");
-                foreach (InstanceID id in Loader.citizenList)
+                foreach (InstanceID id in CitizenList.followList)
                 {
                     Log.Message(id.ToString());
                 }

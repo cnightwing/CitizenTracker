@@ -27,6 +27,5 @@ namespace CitizenTracker
 }
 
 //Notes to self:
-//Need to implement save feature
-//Need to add panels on load data too
-//Need to tidy up panel
+//Put actual age in a column
+//Tidy up columns

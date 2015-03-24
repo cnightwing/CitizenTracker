@@ -13,7 +13,7 @@ namespace CitizenTracker
 {
     public class FollowedPanel : UIPanel
     {
-        public InstanceID ID;
+        public InstanceID instanceID;
 
         string Name;
         string AgeEducation;
@@ -31,6 +31,8 @@ namespace CitizenTracker
         BuildingManager bManager = Singleton<BuildingManager>.instance;
 
         //Major inclusions
+        UIPanel happinessPanel;
+        UISprite happinessIcon;
         UIButton nameButton;
         UILabel ageeduLabel;
         UIButton homeButton;
@@ -40,13 +42,13 @@ namespace CitizenTracker
         UIPanel statusPanel;
         UILabel statusLabel;
         UIButton targetButton;
-        UIPanel happinessPanel;
-        UISprite happinessIcon;
+        UIPanel deletePanel;
+        UIButton deleteButton;
         
         public override void Start()
         {
             this.height = 36;
-            this.width = 1076;
+            this.width = 1142;
             this.backgroundSprite = "ListItemHover";
             this.autoLayoutDirection = LayoutDirection.Horizontal;
             this.autoLayoutStart = LayoutStart.BottomLeft;
@@ -59,7 +61,7 @@ namespace CitizenTracker
             happinessPanel.height = 36;
             happinessPanel.autoLayoutDirection = LayoutDirection.Vertical;
             happinessPanel.autoLayoutStart = LayoutStart.TopLeft;
-            happinessPanel.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
+            happinessPanel.autoLayoutPadding = new RectOffset(6, 6, 6, 6);
             happinessPanel.autoLayout = true;
 
             happinessIcon = happinessPanel.AddUIComponent(typeof(UISprite)) as UISprite;
@@ -69,7 +71,7 @@ namespace CitizenTracker
 
             nameButton = this.AddUIComponent(typeof(UIButton)) as UIButton;
 
-            nameButton.width = 160;
+            nameButton.width = 150;
             nameButton.height = 36;
             nameButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
             nameButton.textVerticalAlignment = UIVerticalAlignment.Middle;
@@ -83,14 +85,14 @@ namespace CitizenTracker
             ageeduLabel = this.AddUIComponent(typeof(UILabel)) as UILabel;
 
             ageeduLabel.autoSize = false;
-            ageeduLabel.width = 200;
+            ageeduLabel.width = 210;
             ageeduLabel.height = 36;
             ageeduLabel.textAlignment = UIHorizontalAlignment.Left;
             ageeduLabel.verticalAlignment = UIVerticalAlignment.Middle;
 
             homeButton = this.AddUIComponent(typeof(UIButton)) as UIButton;
 
-            homeButton.width = 200;
+            homeButton.width = 210;
             homeButton.height = 36;
             homeButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
             homeButton.textVerticalAlignment = UIVerticalAlignment.Middle;
@@ -103,7 +105,7 @@ namespace CitizenTracker
 
             workPanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
 
-            workPanel.width = 240;
+            workPanel.width = 250;
             workPanel.height = 36;
             workPanel.autoLayoutDirection = LayoutDirection.Horizontal;
             workPanel.autoLayoutStart = LayoutStart.BottomLeft;
@@ -129,7 +131,7 @@ namespace CitizenTracker
 
             statusPanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
 
-            statusPanel.width = 240;
+            statusPanel.width = 250;
             statusPanel.height = 36;
             statusPanel.autoLayoutDirection = LayoutDirection.Horizontal;
             statusPanel.autoLayoutStart = LayoutStart.BottomLeft;
@@ -152,103 +154,125 @@ namespace CitizenTracker
             targetButton.focusedTextColor = new Color32(7, 132, 255, 255);
             targetButton.pressedTextColor = new Color32(30, 30, 44, 255);
             targetButton.eventClick += GoToTarget;
+
+            deletePanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
+
+            deletePanel.width = 36;
+            deletePanel.height = 36;
+            deletePanel.autoLayoutDirection = LayoutDirection.Vertical;
+            deletePanel.autoLayoutStart = LayoutStart.TopLeft;
+            deletePanel.autoLayoutPadding = new RectOffset(6, 6, 6, 6);
+            deletePanel.autoLayout = true;
+
+            deleteButton = deletePanel.AddUIComponent(typeof(UIButton)) as UIButton;
+
+            deleteButton.width = 24;
+            deleteButton.height = 24;
+            deleteButton.normalFgSprite = "buttonclose";
+            deleteButton.hoveredFgSprite = "buttonclosehover";
+            deleteButton.pressedFgSprite = "buttonclosepressed";
+            deleteButton.eventClick += Unfollow;
         }
 
         public override void Update()
         {
-            uint citizen = ID.Citizen;
-            CitizenInfo citizenInfo = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].GetCitizenInfo(citizen);
+            uint citizen = instanceID.Citizen;
 
-            //Name
-            Name = cManager.GetCitizenName(citizen);
-            nameButton.text = this.Name;
-            
-            //Age and Education
-            AgeEducation = Locale.Get("CITIZEN_AGEEDUCATION",cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].EducationLevel.ToString() + Citizen.GetAgeGroup(cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].Age));
-            ageeduLabel.text = this.AgeEducation;
+            if (cManager.GetCitizenName(citizen) != null)
+            {
+                CitizenInfo citizenInfo = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].GetCitizenInfo(citizen);
 
-            //Home
-            ushort homeNo = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_homeBuilding;
-            if (homeNo != 0)
-            {
-                homeID.Building = homeNo;
-                Home = bManager.GetBuildingName(homeNo, ID);
-                homeButton.text = this.Home;
-                homeButton.Enable();
-            }
-            else
-            {
-                homeButton.text = "Homeless";
-                homeButton.Disable();
-            }
+                //Name
+                Name = cManager.GetCitizenName(citizen);
+                nameButton.text = this.Name;
 
-            //Work
-            ushort workNo = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_workBuilding;
-            ItemClass.Level schoolLevel = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].GetCurrentSchoolLevel(citizen);
-            if (schoolLevel != ItemClass.Level.None)
-            {
-                workLabel.text = "Student: ";
-            }
-            else if(workNo == 0)
-            {
-                workLabel.text = "Unemployed";
-            }
-            else
-            {
-                workLabel.text = "Worker: ";
-            }
-            if(workNo != 0)
-            {
-                workID.Building = workNo;
-                Work = bManager.GetBuildingName(workNo, ID);
-                workButton.text = this.Work;
-                workButton.isVisible = true;
-            }
-            else
-            {
-                workButton.isVisible = false;
-            }
+                //Age and Education
+                AgeEducation = Locale.Get("CITIZEN_AGEEDUCATION", cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].EducationLevel.ToString() + Citizen.GetAgeGroup(cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].Age));
+                ageeduLabel.text = this.AgeEducation;
 
-            //Status
-            Status = citizenInfo.m_citizenAI.GetLocalizedStatus(citizen, ref cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)], out targetID);
-            ushort citizenNo = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_instance;
-            Status2 = citizenInfo.m_citizenAI.GetLocalizedStatus(citizenNo, ref cManager.m_instances.m_buffer[(int)((UIntPtr)citizenNo)], out targetID);
-            if(Status == "Confused")
-            {
-                statusLabel.text = this.Status2;
-            }
-            else
-            {
+                //Home
+                ushort homeNo = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_homeBuilding;
+                if (homeNo != 0)
+                {
+                    homeID.Building = homeNo;
+                    Home = bManager.GetBuildingName(homeNo, instanceID);
+                    homeButton.text = this.Home;
+                    homeButton.Enable();
+                }
+                else
+                {
+                    homeButton.text = "Homeless";
+                    homeButton.Disable();
+                }
+
+                //Work
+                ushort workNo = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_workBuilding;
+                ItemClass.Level schoolLevel = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].GetCurrentSchoolLevel(citizen);
+                if (schoolLevel != ItemClass.Level.None)
+                {
+                    workLabel.text = "Student: ";
+                }
+                else if (workNo == 0)
+                {
+                    workLabel.text = "Unemployed";
+                }
+                else
+                {
+                    workLabel.text = "Worker: ";
+                }
+                if (workNo != 0)
+                {
+                    workID.Building = workNo;
+                    Work = bManager.GetBuildingName(workNo, instanceID);
+                    workButton.text = this.Work;
+                    workButton.isVisible = true;
+                }
+                else
+                {
+                    workButton.isVisible = false;
+                }
+
+                //Status
+                Status = citizenInfo.m_citizenAI.GetLocalizedStatus(citizen, ref cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)], out targetID);
                 statusLabel.text = this.Status;
-            }
-            
-            if (targetID.IsEmpty)
-            {
-                targetButton.isVisible = false;
+                if (targetID.IsEmpty)
+                {
+                    targetButton.isVisible = false;
+                }
+                else
+                {
+                    Target = bManager.GetBuildingName(targetID.Building, instanceID);
+                    targetButton.text = " " + this.Target;
+                    targetButton.isVisible = true;
+                }
+
+                //Happiness
+                string[] happinessLevels = new string[]
+                {
+                    "VeryUnhappy",
+                    "Unhappy",
+                    "Happy",
+                    "VeryHappy",
+                    "ExtremelyHappy"
+                };
+                Happiness = Citizen.GetHappiness((int)cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_health, (int)cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_wellbeing);
+                happinessIcon.spriteName = "NotificationIcon" + happinessLevels[(int)Citizen.GetHappinessLevel(Happiness)];
             }
             else
             {
-                Target = bManager.GetBuildingName(targetID.Building, ID);
-                targetButton.text = " " + this.Target;
-                targetButton.isVisible = true;
+                homeButton.text = "";
+                homeButton.Disable();
+                workLabel.text = "";
+                workButton.isVisible = false;
+                statusLabel.text = "Dead or moved away";
+                targetButton.isVisible = false;
+                happinessIcon.spriteName = "NotificationIconDead";
             }
-
-            //Happiness
-            string[] happinessLevels = new string[]
-            {
-                "VeryUnhappy",
-                "Unhappy",
-                "Happy",
-                "VeryHappy",
-                "ExtremelyHappy"
-            };
-            Happiness = Citizen.GetHappiness((int)cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_health, (int)cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_wellbeing);
-            happinessIcon.spriteName = "NotificationIcon" + happinessLevels[(int)Citizen.GetHappinessLevel(Happiness)];
         }
 
         private void GoToCitizen(UIComponent component, UIMouseEventParameter p)
         {
-            ToolsModifierControl.cameraController.SetTarget(ID,ToolsModifierControl.cameraController.transform.position,true);
+            ToolsModifierControl.cameraController.SetTarget(instanceID,ToolsModifierControl.cameraController.transform.position,true);
         }
 
         private void GoToHome(UIComponent component, UIMouseEventParameter p)
@@ -264,6 +288,12 @@ namespace CitizenTracker
         private void GoToTarget(UIComponent component, UIMouseEventParameter p)
         {
             ToolsModifierControl.cameraController.SetTarget(targetID, ToolsModifierControl.cameraController.transform.position, true);
+        }
+
+        private void Unfollow(UIComponent component, UIMouseEventParameter p)
+        {
+            CitizenList.followList.Remove(instanceID);
+            Destroy(this);
         }
     }
 }

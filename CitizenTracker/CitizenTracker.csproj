@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CitizenList.cs" />
     <Compile Include="FollowButton.cs" />
     <Compile Include="FollowedPanel.cs" />
     <Compile Include="HeaderPanel.cs" />

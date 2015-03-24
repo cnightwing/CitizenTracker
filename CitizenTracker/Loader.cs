@@ -21,8 +21,6 @@ namespace CitizenTracker
         public TrackerPanel trackerPanel;
         public FollowButton followButton;
 
-        public static List<InstanceID> citizenList = new List<InstanceID>();
-
         public override void OnLevelLoaded(LoadMode mode)
         {
             var uiView = GameObject.FindObjectOfType<UIView>();
@@ -41,11 +39,11 @@ namespace CitizenTracker
             mainPanel = uiView.AddUIComponent(typeof(UIPanel)) as UIPanel;
             mainPanel.isVisible = false;
             mainPanel.height = 396;
-            mainPanel.width = 1086;
+            mainPanel.width = 1152;
             mainPanel.backgroundSprite = "GenericPanel";
             mainPanel.relativePosition = new Vector2
             (
-                escButton.relativePosition.x + escButton.width - 1086,
+                escButton.relativePosition.x + escButton.width - 1152,
                 escButton.relativePosition.y + 100
             );
             mainPanel.autoLayout = true;
@@ -56,7 +54,7 @@ namespace CitizenTracker
 
             bodyPanel = mainPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
             bodyPanel.height = 360;
-            bodyPanel.width = 1086;
+            bodyPanel.width = 1152;
             bodyPanel.autoLayout = true;
             bodyPanel.autoLayoutDirection = LayoutDirection.Horizontal;
             bodyPanel.autoLayoutStart = LayoutStart.TopLeft;

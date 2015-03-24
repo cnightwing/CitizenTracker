@@ -34,7 +34,7 @@ namespace CitizenTracker
         public override void Update()
         {
             InstanceID instanceID = WorldInfoPanel.GetCurrentInstanceID();
-            if (Loader.citizenList.Contains(instanceID))
+            if (CitizenList.followList.Contains(instanceID))
             {
                 this.normalBgSprite = "InfoIconBaseNormal";
                 this.focusedBgSprite = "InfoIconBaseNormal";
@@ -64,13 +64,13 @@ namespace CitizenTracker
             FollowedPanel[] followedPanels = trackerPanel.GetComponentsInChildren<FollowedPanel>();
 
             InstanceID instanceID = WorldInfoPanel.GetCurrentInstanceID();
-            if (Loader.citizenList.Contains(instanceID))
+            if (CitizenList.followList.Contains(instanceID))
             {
-                Loader.citizenList.Remove(instanceID);
+                CitizenList.followList.Remove(instanceID);
                 Log.Message("Unfollowing " + instanceID.ToString());
                 foreach (FollowedPanel followedPanel in followedPanels)
                 {
-                    if (followedPanel.ID == instanceID)
+                    if (followedPanel.instanceID == instanceID)
                     {
                         Destroy(followedPanel);
                     }
@@ -80,8 +80,8 @@ namespace CitizenTracker
             {
                 FollowedPanel newPanel;
                 newPanel = trackerPanel.AddUIComponent(typeof(FollowedPanel)) as FollowedPanel;
-                newPanel.ID = instanceID;
-                Loader.citizenList.Add(instanceID);
+                newPanel.instanceID = instanceID;
+                CitizenList.followList.Add(instanceID);
                 Log.Message("Following " + instanceID.ToString());
             }
         }

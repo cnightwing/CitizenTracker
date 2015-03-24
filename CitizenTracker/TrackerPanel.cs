@@ -14,7 +14,7 @@ namespace CitizenTracker
     {
         public override void Start()
         {
-            this.width = 1076;
+            this.width = 1142;
             this.height = 360;
             this.autoLayoutDirection = LayoutDirection.Vertical;
             this.autoLayoutStart = LayoutStart.TopLeft;
