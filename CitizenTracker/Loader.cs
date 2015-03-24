@@ -122,6 +122,10 @@ namespace CitizenTracker
             {
                 GameObject.Destroy(followedPanel);
             }
+            foreach(InstanceID follow in CitizenList.followList)
+            {
+                CitizenList.followList.Remove(follow);
+            }
         }
     }
 }
