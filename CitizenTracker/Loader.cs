@@ -117,15 +117,10 @@ namespace CitizenTracker
 
         public override void OnLevelUnloading()
         {
-            FollowedPanel[] followedPanels = trackerPanel.GetComponentsInChildren<FollowedPanel>();
-            foreach(FollowedPanel followedPanel in followedPanels)
-            {
-                GameObject.Destroy(followedPanel);
-            }
-            foreach(InstanceID follow in CitizenList.followList)
-            {
-                CitizenList.followList.Remove(follow);
-            }
+            GameObject.Destroy(mainPanel.gameObject);
+            GameObject.Destroy(trackerButton.gameObject);
+            GameObject.Destroy(followButton.gameObject);
+            CitizenList.followList.Clear();
         }
     }
 }
