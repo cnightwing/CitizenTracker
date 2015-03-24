@@ -105,6 +105,23 @@ namespace CitizenTracker
                 smileyFace.relativePosition.x + (smileyFace.width / 2.0f) - 18,
                 smileyFace.relativePosition.y + 40
             );
+
+            //Add panels for existing follows
+            foreach(InstanceID follow in CitizenList.followList)
+            {
+                FollowedPanel newPanel;
+                newPanel = trackerPanel.AddUIComponent(typeof(FollowedPanel)) as FollowedPanel;
+                newPanel.instanceID = follow;
+            }
+        }
+
+        public override void OnLevelUnloading()
+        {
+            FollowedPanel[] followedPanels = trackerPanel.GetComponentsInChildren<FollowedPanel>();
+            foreach(FollowedPanel followedPanel in followedPanels)
+            {
+                GameObject.Destroy(followedPanel);
+            }
         }
     }
 }

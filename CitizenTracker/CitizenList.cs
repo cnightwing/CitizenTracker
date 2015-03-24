@@ -14,36 +14,41 @@ namespace CitizenTracker
     {
         public static List<InstanceID> followList = new List<InstanceID>();
 
-        public byte[] Serialize()
+        public byte[] SerializeList()
         {
-            List<uint> rawList = new List<uint>();
+            List<UInt32> rawList = new List<UInt32>();
             foreach (InstanceID follow in followList)
             {
                 rawList.Add(follow.RawData);
             }
-
-            byte[] data = rawList
-                .SelectMany(s => BitConverter.GetBytes(s))
-                .ToArray();
-
+            List<byte> byteList = new List<byte>();
+            foreach (UInt32 raw in rawList)
+            {
+                byte[] dataBytes = BitConverter.GetBytes(raw);
+                foreach (byte dataByte in dataBytes)
+                {
+                    byteList.Add(dataByte);
+                }
+            }
+            byte[] data = byteList.ToArray();
             return data;
         }
 
         public override void OnSaveData()
         {
-            serializableDataManager.SaveData("CitizenTracker", Serialize());
+            serializableDataManager.SaveData("CitizenTracker", SerializeList());
         }
 
-        public List<InstanceID> Deserialize(byte[] data)
+        public List<InstanceID> DeserializeList(byte[] data)
         {
             int followCount = data.Length / 4;
-            List<uint> rawList = new List<uint>();
-            for (int i = 1; i < followCount + 1; i++)
+            List<UInt32> rawList = new List<UInt32>();
+            for (int i = 0; i < followCount; i++)
             {
                 rawList.Add(BitConverter.ToUInt32(data, i * 4));
             }
             List<InstanceID> loadList = new List<InstanceID>();
-            foreach (uint raw in rawList)
+            foreach (UInt32 raw in rawList)
             {
                 InstanceID newInstance = new InstanceID();
                 newInstance.RawData = raw;
@@ -59,7 +64,7 @@ namespace CitizenTracker
             {
                 return;
             }
-            followList = Deserialize(data);
+            followList = DeserializeList(data);
         }
     }
 }

@@ -22,7 +22,6 @@ namespace CitizenTracker
         string Work;
         InstanceID workID;
         string Status;
-        string Status2;
         string Target;
         InstanceID targetID;
         int Happiness;
@@ -37,9 +36,13 @@ namespace CitizenTracker
         UILabel ageeduLabel;
         UIButton homeButton;
         UIPanel workPanel;
+        UIPanel workGapPanel;
+        UIPanel workSubPanel;
         UIButton workButton;
         UILabel workLabel;
         UIPanel statusPanel;
+        UIPanel statusGapPanel;
+        UIPanel statusSubPanel;
         UILabel statusLabel;
         UIButton targetButton;
         UIPanel deletePanel;
@@ -51,7 +54,7 @@ namespace CitizenTracker
             this.width = 1142;
             this.backgroundSprite = "ListItemHover";
             this.autoLayoutDirection = LayoutDirection.Horizontal;
-            this.autoLayoutStart = LayoutStart.BottomLeft;
+            this.autoLayoutStart = LayoutStart.TopLeft;
             this.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
             this.autoLayout = true;
 
@@ -75,11 +78,11 @@ namespace CitizenTracker
             nameButton.height = 36;
             nameButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
             nameButton.textVerticalAlignment = UIVerticalAlignment.Middle;
-            nameButton.textColor = new Color32(7, 132, 255, 255);
+            nameButton.textColor = new Color32(0, 219, 254, 255);
             nameButton.disabledTextColor = new Color32(7, 7, 7, 255);
             nameButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            nameButton.focusedTextColor = new Color32(7, 132, 255, 255);
-            nameButton.pressedTextColor = new Color32(30, 30, 44, 255);
+            nameButton.focusedTextColor = new Color32(0, 219, 254, 255);
+            nameButton.pressedTextColor = new Color32(2, 48, 61, 255);
             nameButton.eventClick += GoToCitizen;
 
             ageeduLabel = this.AddUIComponent(typeof(UILabel)) as UILabel;
@@ -96,63 +99,91 @@ namespace CitizenTracker
             homeButton.height = 36;
             homeButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
             homeButton.textVerticalAlignment = UIVerticalAlignment.Middle;
-            homeButton.textColor = new Color32(7, 132, 255, 255);
+            homeButton.textColor = new Color32(0, 219, 254, 255);
             homeButton.disabledTextColor = new Color32(7, 7, 7, 255);
             homeButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            homeButton.focusedTextColor = new Color32(7, 132, 255, 255);
-            homeButton.pressedTextColor = new Color32(30, 30, 44, 255);
+            homeButton.focusedTextColor = new Color32(0, 219, 254, 255);
+            homeButton.pressedTextColor = new Color32(2, 48, 61, 255);
             homeButton.eventClick += GoToHome;
 
             workPanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
 
             workPanel.width = 250;
             workPanel.height = 36;
-            workPanel.autoLayoutDirection = LayoutDirection.Horizontal;
-            workPanel.autoLayoutStart = LayoutStart.BottomLeft;
+            workPanel.autoLayoutDirection = LayoutDirection.Vertical;
+            workPanel.autoLayoutStart = LayoutStart.TopLeft;
             workPanel.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
             workPanel.autoLayout = true;
 
-            workLabel = workPanel.AddUIComponent(typeof(UILabel)) as UILabel;
+            workGapPanel = workPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
+
+            workGapPanel.width = 250;
+            workGapPanel.height = 9;
+
+            workSubPanel = workPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
+
+            workSubPanel.width = 250;
+            workSubPanel.height = 24;
+            workSubPanel.autoLayoutDirection = LayoutDirection.Horizontal;
+            workSubPanel.autoLayoutStart = LayoutStart.TopLeft;
+            workSubPanel.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
+            workSubPanel.autoLayout = true;
+
+            workLabel = workSubPanel.AddUIComponent(typeof(UILabel)) as UILabel;
 
             workLabel.textAlignment = UIHorizontalAlignment.Left;
             workLabel.verticalAlignment = UIVerticalAlignment.Middle;
 
-            workButton = workPanel.AddUIComponent(typeof(UIButton)) as UIButton;
+            workButton = workSubPanel.AddUIComponent(typeof(UIButton)) as UIButton;
 
             workButton.autoSize = true;
             workButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
             workButton.textVerticalAlignment = UIVerticalAlignment.Middle;
-            workButton.textColor = new Color32(7, 132, 255, 255);
+            workButton.textColor = new Color32(0, 219, 254, 255);
             workButton.disabledTextColor = new Color32(7, 7, 7, 255);
             workButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            workButton.focusedTextColor = new Color32(7, 132, 255, 255);
-            workButton.pressedTextColor = new Color32(30, 30, 44, 255);
+            workButton.focusedTextColor = new Color32(0, 219, 254, 255);
+            workButton.pressedTextColor = new Color32(2, 48, 61, 255);
             workButton.eventClick += GoToWork;
 
             statusPanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
 
             statusPanel.width = 250;
             statusPanel.height = 36;
-            statusPanel.autoLayoutDirection = LayoutDirection.Horizontal;
-            statusPanel.autoLayoutStart = LayoutStart.BottomLeft;
+            statusPanel.autoLayoutDirection = LayoutDirection.Vertical;
+            statusPanel.autoLayoutStart = LayoutStart.TopLeft;
             statusPanel.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
             statusPanel.autoLayout = true;
 
-            statusLabel = statusPanel.AddUIComponent(typeof(UILabel)) as UILabel;
+            statusGapPanel = statusPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
+
+            statusGapPanel.width = 250;
+            statusGapPanel.height = 9;
+
+            statusSubPanel = statusPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
+
+            statusSubPanel.width = 250;
+            statusSubPanel.height = 24;
+            statusSubPanel.autoLayoutDirection = LayoutDirection.Horizontal;
+            statusSubPanel.autoLayoutStart = LayoutStart.TopLeft;
+            statusSubPanel.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
+            statusSubPanel.autoLayout = true;
+
+            statusLabel = statusSubPanel.AddUIComponent(typeof(UILabel)) as UILabel;
 
             statusLabel.textAlignment = UIHorizontalAlignment.Left;
             statusLabel.verticalAlignment = UIVerticalAlignment.Middle;
 
-            targetButton = statusPanel.AddUIComponent(typeof(UIButton)) as UIButton;
+            targetButton = statusSubPanel.AddUIComponent(typeof(UIButton)) as UIButton;
 
             targetButton.autoSize = true;
             targetButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
             targetButton.textVerticalAlignment = UIVerticalAlignment.Middle;
-            targetButton.textColor = new Color32(7, 132, 255, 255);
+            targetButton.textColor = new Color32(0, 219, 254, 255);
             targetButton.disabledTextColor = new Color32(7, 7, 7, 255);
             targetButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            targetButton.focusedTextColor = new Color32(7, 132, 255, 255);
-            targetButton.pressedTextColor = new Color32(30, 30, 44, 255);
+            targetButton.focusedTextColor = new Color32(0, 219, 254, 255);
+            targetButton.pressedTextColor = new Color32(2, 48, 61, 255);
             targetButton.eventClick += GoToTarget;
 
             deletePanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
@@ -161,13 +192,13 @@ namespace CitizenTracker
             deletePanel.height = 36;
             deletePanel.autoLayoutDirection = LayoutDirection.Vertical;
             deletePanel.autoLayoutStart = LayoutStart.TopLeft;
-            deletePanel.autoLayoutPadding = new RectOffset(6, 6, 6, 6);
+            deletePanel.autoLayoutPadding = new RectOffset(3, 3, 2, 4);
             deletePanel.autoLayout = true;
 
             deleteButton = deletePanel.AddUIComponent(typeof(UIButton)) as UIButton;
 
-            deleteButton.width = 24;
-            deleteButton.height = 24;
+            deleteButton.width = 30;
+            deleteButton.height = 30;
             deleteButton.normalFgSprite = "buttonclose";
             deleteButton.hoveredFgSprite = "buttonclosehover";
             deleteButton.pressedFgSprite = "buttonclosepressed";
@@ -242,7 +273,7 @@ namespace CitizenTracker
                 else
                 {
                     Target = bManager.GetBuildingName(targetID.Building, instanceID);
-                    targetButton.text = " " + this.Target;
+                    targetButton.text = this.Target;
                     targetButton.isVisible = true;
                 }
 
