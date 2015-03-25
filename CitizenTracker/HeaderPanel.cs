@@ -17,7 +17,8 @@ namespace CitizenTracker
 
         UISprite placeholder;
         UILabel nameHeader;
-        UILabel ageeduHeader;
+        UILabel ageHeader;
+        UILabel eduHeader;
         UILabel homeHeader;
         UILabel workHeader;
         UILabel statusHeader;
@@ -46,15 +47,24 @@ namespace CitizenTracker
             nameHeader.textAlignment = UIHorizontalAlignment.Left;
             nameHeader.verticalAlignment = UIVerticalAlignment.Middle;
 
-            ageeduHeader = this.AddUIComponent(typeof(UILabel)) as UILabel;
+            ageHeader = this.AddUIComponent(typeof(UILabel)) as UILabel;
             
-            ageeduHeader.text = "Education / Age";
-            ageeduHeader.autoSize = false;
-            ageeduHeader.width = 210;
-            ageeduHeader.height = 36;
-            ageeduHeader.textAlignment = UIHorizontalAlignment.Left;
-            ageeduHeader.verticalAlignment = UIVerticalAlignment.Middle;
-            
+            ageHeader.text = "Age";
+            ageHeader.autoSize = false;
+            ageHeader.width = 110;
+            ageHeader.height = 36;
+            ageHeader.textAlignment = UIHorizontalAlignment.Left;
+            ageHeader.verticalAlignment = UIVerticalAlignment.Middle;
+
+            eduHeader = this.AddUIComponent(typeof(UILabel)) as UILabel;
+
+            eduHeader.text = "Education";
+            eduHeader.autoSize = false;
+            eduHeader.width = 100;
+            eduHeader.height = 36;
+            eduHeader.textAlignment = UIHorizontalAlignment.Left;
+            eduHeader.verticalAlignment = UIVerticalAlignment.Middle;
+
             homeHeader = this.AddUIComponent(typeof(UILabel)) as UILabel;
             
             homeHeader.text = "Residence";

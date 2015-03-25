@@ -51,10 +51,10 @@ namespace CitizenTracker
                 this.focusedBgSprite = "InfoIconBaseNormal";
                 this.hoveredBgSprite = "InfoIconBaseNormal";
                 this.pressedBgSprite = "InfoIconBaseNormal";
-                this.normalFgSprite = "";
-                this.focusedFgSprite = "";
-                this.hoveredFgSprite = "";
-                this.pressedFgSprite = "";
+                this.normalFgSprite = "InfoIconHealthDisabled";
+                this.focusedFgSprite = "InfoIconHealthDisabled";
+                this.hoveredFgSprite = "InfoIconHealthDisabled";
+                this.pressedFgSprite = "InfoIconHealthDisabled";
             }
         }
 

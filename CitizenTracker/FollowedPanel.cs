@@ -16,7 +16,8 @@ namespace CitizenTracker
         public InstanceID instanceID;
 
         string Name;
-        string AgeEducation;
+        string Age;
+        string Education;
         string Home;
         InstanceID homeID;
         string Work;
@@ -33,7 +34,8 @@ namespace CitizenTracker
         UIPanel happinessPanel;
         UISprite happinessIcon;
         UIButton nameButton;
-        UILabel ageeduLabel;
+        UILabel ageLabel;
+        UILabel eduLabel;
         UIButton homeButton;
         UIPanel workPanel;
         UIPanel workGapPanel;
@@ -85,13 +87,21 @@ namespace CitizenTracker
             nameButton.pressedTextColor = new Color32(2, 48, 61, 255);
             nameButton.eventClick += GoToCitizen;
 
-            ageeduLabel = this.AddUIComponent(typeof(UILabel)) as UILabel;
+            ageLabel = this.AddUIComponent(typeof(UILabel)) as UILabel;
 
-            ageeduLabel.autoSize = false;
-            ageeduLabel.width = 210;
-            ageeduLabel.height = 36;
-            ageeduLabel.textAlignment = UIHorizontalAlignment.Left;
-            ageeduLabel.verticalAlignment = UIVerticalAlignment.Middle;
+            ageLabel.autoSize = false;
+            ageLabel.width = 110;
+            ageLabel.height = 36;
+            ageLabel.textAlignment = UIHorizontalAlignment.Left;
+            ageLabel.verticalAlignment = UIVerticalAlignment.Middle;
+
+            eduLabel = this.AddUIComponent(typeof(UILabel)) as UILabel;
+
+            eduLabel.autoSize = false;
+            eduLabel.width = 100;
+            eduLabel.height = 36;
+            eduLabel.textAlignment = UIHorizontalAlignment.Left;
+            eduLabel.verticalAlignment = UIVerticalAlignment.Middle;
 
             homeButton = this.AddUIComponent(typeof(UIButton)) as UIButton;
 
@@ -217,9 +227,34 @@ namespace CitizenTracker
                 Name = cManager.GetCitizenName(citizen);
                 nameButton.text = this.Name;
 
-                //Age and Education
-                AgeEducation = Locale.Get("CITIZEN_AGEEDUCATION", cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].EducationLevel.ToString() + Citizen.GetAgeGroup(cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].Age));
-                ageeduLabel.text = this.AgeEducation;
+                //Age
+                Age = Citizen.GetAgeGroup(cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].Age).ToString();
+                if (Age == "Young")
+                {
+                    ageLabel.text = "Young Adult";
+                }
+                else
+                {
+                    ageLabel.text = this.Age;
+                }                
+                
+                //Education
+                Education = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].EducationLevel.ToString();
+                switch(Education)
+                {
+                    case "Uneducated":
+                        eduLabel.text = "None";
+                        break;
+                    case "OneSchool":
+                        eduLabel.text = "Elementary";
+                        break;
+                    case "TwoSchools":
+                        eduLabel.text = "High School";
+                        break;
+                    case "ThreeSchools":
+                        eduLabel.text = "University";
+                        break;
+                }
 
                 //Home
                 ushort homeNo = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_homeBuilding;
