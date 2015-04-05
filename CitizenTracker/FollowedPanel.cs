@@ -15,200 +15,152 @@ namespace CitizenTracker
     {
         public InstanceID instanceID;
 
+        int Happiness;
         string Name;
-        string Age;
-        string Education;
-        string Home;
-        InstanceID homeID;
-        string Work;
-        InstanceID workID;
+        string District;
         string Status;
         string Target;
         InstanceID targetID;
-        int Happiness;
-
+        
         CitizenManager cManager = Singleton<CitizenManager>.instance;
         BuildingManager bManager = Singleton<BuildingManager>.instance;
+        DistrictManager dManager = Singleton<DistrictManager>.instance;
+        SimulationManager sManager = Singleton<SimulationManager>.instance;
 
-        //Major inclusions
+        //Panel to contain and center the detail button
+        UIPanel detailPanel;
+        UIButton detailButton;
+
+        //Panel to contain and center the happiness sprite
         UIPanel happinessPanel;
         UISprite happinessIcon;
+
+        //Panel to hold text items so that there's proper padding at the top and bottom
+        UIPanel paddingPanel;
+
+        //Panel to contain the name, type and activity
+        UIPanel summaryPanel;
         UIButton nameButton;
-        UILabel ageLabel;
-        UILabel eduLabel;
-        UIButton homeButton;
-        UIPanel workPanel;
-        UIPanel workGapPanel;
-        UIPanel workSubPanel;
-        UIButton workButton;
-        UILabel workLabel;
+        UILabel summaryLabel;
         UIPanel statusPanel;
-        UIPanel statusGapPanel;
-        UIPanel statusSubPanel;
         UILabel statusLabel;
         UIButton targetButton;
+
+        //Panel to contain the delete button
         UIPanel deletePanel;
-        UIButton deleteButton;
+        UIButton deleteButton;        
         
         public override void Start()
         {
-            this.height = 36;
-            this.width = 1142;
-            this.backgroundSprite = "ListItemHover";
+            this.width = 360;
+            this.height = 72;
+            this.backgroundSprite = "InfoPanelBack";
             this.autoLayoutDirection = LayoutDirection.Horizontal;
             this.autoLayoutStart = LayoutStart.TopLeft;
             this.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
             this.autoLayout = true;
+            
+            //Detail button panel
+            detailPanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
+            detailPanel.width = 32;
+            detailPanel.height = 72;
+            detailPanel.autoLayoutDirection = LayoutDirection.Vertical;
+            detailPanel.autoLayoutStart = LayoutStart.TopLeft;
+            detailPanel.autoLayoutPadding = new RectOffset(0, 0, 20, 20);
+            detailPanel.autoLayout = true;
 
+            detailButton = detailPanel.AddUIComponent(typeof(UIButton)) as UIButton;
+            detailButton.width = 32;
+            detailButton.height = 32;
+            detailButton.normalFgSprite = "ArrowLeftFocused";
+            detailButton.hoveredFgSprite = "ArrowLeftHovered";
+            detailButton.pressedFgSprite = "ArrowLeftPressed";
+            detailButton.eventClick += ShowDetail;
+
+            //Happiness panel
             happinessPanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
-
-            happinessPanel.width = 36;
-            happinessPanel.height = 36;
+            happinessPanel.width = 40;
+            happinessPanel.height = 72;
             happinessPanel.autoLayoutDirection = LayoutDirection.Vertical;
             happinessPanel.autoLayoutStart = LayoutStart.TopLeft;
-            happinessPanel.autoLayoutPadding = new RectOffset(6, 6, 6, 6);
+            happinessPanel.autoLayoutPadding = new RectOffset(0, 8, 20, 20);
             happinessPanel.autoLayout = true;
 
             happinessIcon = happinessPanel.AddUIComponent(typeof(UISprite)) as UISprite;
+            happinessIcon.width = 32;
+            happinessIcon.height = 32;
 
-            happinessIcon.width = 24;
-            happinessIcon.height = 24;
+            //Padding and summary panel
+            paddingPanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
+            paddingPanel.width = 248;
+            paddingPanel.height = 72;
+            paddingPanel.autoLayoutDirection = LayoutDirection.Vertical;
+            paddingPanel.autoLayoutStart = LayoutStart.TopLeft;
+            paddingPanel.autoLayoutPadding = new RectOffset(0, 0, 6, 6);
+            paddingPanel.autoLayout = true;
 
-            nameButton = this.AddUIComponent(typeof(UIButton)) as UIButton;
+            summaryPanel = paddingPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
+            summaryPanel.width = 248;
+            summaryPanel.height = 60;
+            summaryPanel.autoLayoutDirection = LayoutDirection.Vertical;
+            summaryPanel.autoLayoutStart = LayoutStart.TopLeft;
+            summaryPanel.autoLayoutPadding = new RectOffset(0, 0, 1, 1);
+            summaryPanel.autoLayout = true;
 
-            nameButton.width = 150;
-            nameButton.height = 36;
+            nameButton = summaryPanel.AddUIComponent(typeof(UIButton)) as UIButton;
+            nameButton.width = 248;
+            nameButton.height = 18;
             nameButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
             nameButton.textVerticalAlignment = UIVerticalAlignment.Middle;
-            nameButton.textColor = new Color32(0, 219, 254, 255);
+            nameButton.textColor = new Color32(55, 148, 200, 255);
             nameButton.disabledTextColor = new Color32(7, 7, 7, 255);
             nameButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            nameButton.focusedTextColor = new Color32(0, 219, 254, 255);
+            nameButton.focusedTextColor = new Color32(55, 148, 200, 255);
             nameButton.pressedTextColor = new Color32(2, 48, 61, 255);
             nameButton.eventClick += GoToCitizen;
 
-            ageLabel = this.AddUIComponent(typeof(UILabel)) as UILabel;
+            summaryLabel = summaryPanel.AddUIComponent(typeof(UILabel)) as UILabel;
+            summaryLabel.autoSize = false;
+            summaryLabel.width = 248;
+            summaryLabel.height = 18;
+            summaryLabel.textAlignment = UIHorizontalAlignment.Left;
+            summaryLabel.verticalAlignment = UIVerticalAlignment.Middle;
 
-            ageLabel.autoSize = false;
-            ageLabel.width = 110;
-            ageLabel.height = 36;
-            ageLabel.textAlignment = UIHorizontalAlignment.Left;
-            ageLabel.verticalAlignment = UIVerticalAlignment.Middle;
-
-            eduLabel = this.AddUIComponent(typeof(UILabel)) as UILabel;
-
-            eduLabel.autoSize = false;
-            eduLabel.width = 100;
-            eduLabel.height = 36;
-            eduLabel.textAlignment = UIHorizontalAlignment.Left;
-            eduLabel.verticalAlignment = UIVerticalAlignment.Middle;
-
-            homeButton = this.AddUIComponent(typeof(UIButton)) as UIButton;
-
-            homeButton.width = 210;
-            homeButton.height = 36;
-            homeButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
-            homeButton.textVerticalAlignment = UIVerticalAlignment.Middle;
-            homeButton.textColor = new Color32(0, 219, 254, 255);
-            homeButton.disabledTextColor = new Color32(7, 7, 7, 255);
-            homeButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            homeButton.focusedTextColor = new Color32(0, 219, 254, 255);
-            homeButton.pressedTextColor = new Color32(2, 48, 61, 255);
-            homeButton.eventClick += GoToHome;
-
-            workPanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
-
-            workPanel.width = 250;
-            workPanel.height = 36;
-            workPanel.autoLayoutDirection = LayoutDirection.Vertical;
-            workPanel.autoLayoutStart = LayoutStart.TopLeft;
-            workPanel.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
-            workPanel.autoLayout = true;
-
-            workGapPanel = workPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
-
-            workGapPanel.width = 250;
-            workGapPanel.height = 9;
-
-            workSubPanel = workPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
-
-            workSubPanel.width = 250;
-            workSubPanel.height = 24;
-            workSubPanel.autoLayoutDirection = LayoutDirection.Horizontal;
-            workSubPanel.autoLayoutStart = LayoutStart.TopLeft;
-            workSubPanel.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
-            workSubPanel.autoLayout = true;
-
-            workLabel = workSubPanel.AddUIComponent(typeof(UILabel)) as UILabel;
-
-            workLabel.textAlignment = UIHorizontalAlignment.Left;
-            workLabel.verticalAlignment = UIVerticalAlignment.Middle;
-
-            workButton = workSubPanel.AddUIComponent(typeof(UIButton)) as UIButton;
-
-            workButton.autoSize = true;
-            workButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
-            workButton.textVerticalAlignment = UIVerticalAlignment.Middle;
-            workButton.textColor = new Color32(0, 219, 254, 255);
-            workButton.disabledTextColor = new Color32(7, 7, 7, 255);
-            workButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            workButton.focusedTextColor = new Color32(0, 219, 254, 255);
-            workButton.pressedTextColor = new Color32(2, 48, 61, 255);
-            workButton.eventClick += GoToWork;
-
-            statusPanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
-
-            statusPanel.width = 250;
-            statusPanel.height = 36;
-            statusPanel.autoLayoutDirection = LayoutDirection.Vertical;
+            statusPanel = summaryPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
+            statusPanel.width = 248;
+            statusPanel.height = 18;
+            statusPanel.autoLayoutDirection = LayoutDirection.Horizontal;
             statusPanel.autoLayoutStart = LayoutStart.TopLeft;
             statusPanel.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
             statusPanel.autoLayout = true;
 
-            statusGapPanel = statusPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
-
-            statusGapPanel.width = 250;
-            statusGapPanel.height = 9;
-
-            statusSubPanel = statusPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
-
-            statusSubPanel.width = 250;
-            statusSubPanel.height = 24;
-            statusSubPanel.autoLayoutDirection = LayoutDirection.Horizontal;
-            statusSubPanel.autoLayoutStart = LayoutStart.TopLeft;
-            statusSubPanel.autoLayoutPadding = new RectOffset(0, 0, 0, 0);
-            statusSubPanel.autoLayout = true;
-
-            statusLabel = statusSubPanel.AddUIComponent(typeof(UILabel)) as UILabel;
-
+            statusLabel = statusPanel.AddUIComponent(typeof(UILabel)) as UILabel;
             statusLabel.textAlignment = UIHorizontalAlignment.Left;
             statusLabel.verticalAlignment = UIVerticalAlignment.Middle;
 
-            targetButton = statusSubPanel.AddUIComponent(typeof(UIButton)) as UIButton;
-
+            targetButton = statusPanel.AddUIComponent(typeof(UIButton)) as UIButton;
             targetButton.autoSize = true;
             targetButton.textHorizontalAlignment = UIHorizontalAlignment.Left;
             targetButton.textVerticalAlignment = UIVerticalAlignment.Middle;
-            targetButton.textColor = new Color32(0, 219, 254, 255);
+            targetButton.textColor = new Color32(55, 148, 200, 255);
             targetButton.disabledTextColor = new Color32(7, 7, 7, 255);
             targetButton.hoveredTextColor = new Color32(255, 255, 255, 255);
-            targetButton.focusedTextColor = new Color32(0, 219, 254, 255);
+            targetButton.focusedTextColor = new Color32(55, 148, 200, 255);
             targetButton.pressedTextColor = new Color32(2, 48, 61, 255);
             targetButton.eventClick += GoToTarget;
 
+            //Delete button panel
             deletePanel = this.AddUIComponent(typeof(UIPanel)) as UIPanel;
-
-            deletePanel.width = 36;
-            deletePanel.height = 36;
+            deletePanel.width = 40;
+            deletePanel.height = 72;
             deletePanel.autoLayoutDirection = LayoutDirection.Vertical;
             deletePanel.autoLayoutStart = LayoutStart.TopLeft;
-            deletePanel.autoLayoutPadding = new RectOffset(3, 3, 2, 4);
+            deletePanel.autoLayoutPadding = new RectOffset(4, 4, 20, 20);
             deletePanel.autoLayout = true;
 
             deleteButton = deletePanel.AddUIComponent(typeof(UIButton)) as UIButton;
-
-            deleteButton.width = 30;
-            deleteButton.height = 30;
+            deleteButton.width = 32;
+            deleteButton.height = 32;
             deleteButton.normalFgSprite = "buttonclose";
             deleteButton.hoveredFgSprite = "buttonclosehover";
             deleteButton.pressedFgSprite = "buttonclosepressed";
@@ -223,80 +175,35 @@ namespace CitizenTracker
             {
                 CitizenInfo citizenInfo = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].GetCitizenInfo(citizen);
 
+                //Happiness
+                string[] happinessLevels = new string[]
+                {
+                    "VeryUnhappy",
+                    "Unhappy",
+                    "Happy",
+                    "VeryHappy",
+                    "ExtremelyHappy"
+                };
+                Happiness = Citizen.GetHappiness((int)cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_health, (int)cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_wellbeing);
+                happinessIcon.spriteName = "NotificationIcon" + happinessLevels[(int)Citizen.GetHappinessLevel(Happiness)];
+
                 //Name
                 Name = cManager.GetCitizenName(citizen);
                 nameButton.text = this.Name;
 
-                //Age
-                Age = Citizen.GetAgeGroup(cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].Age).ToString();
-                if (Age == "Young")
-                {
-                    ageLabel.text = "Young Adult";
-                }
-                else
-                {
-                    ageLabel.text = this.Age;
-                }                
-                
-                //Education
-                Education = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].EducationLevel.ToString();
-                switch(Education)
-                {
-                    case "Uneducated":
-                        eduLabel.text = "None";
-                        break;
-                    case "OneSchool":
-                        eduLabel.text = "Elementary";
-                        break;
-                    case "TwoSchools":
-                        eduLabel.text = "High School";
-                        break;
-                    case "ThreeSchools":
-                        eduLabel.text = "University";
-                        break;
-                }
-
-                //Home
+                //Summary
                 ushort homeNo = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_homeBuilding;
-                if (homeNo != 0)
+                Vector3 homePos = bManager.m_buildings.m_buffer[(int)((UIntPtr)homeNo)].m_position;
+                int districtNo = (int)dManager.GetDistrict(homePos);
+                if (districtNo == 0)
                 {
-                    homeID.Building = homeNo;
-                    Home = bManager.GetBuildingName(homeNo, instanceID);
-                    homeButton.text = this.Home;
-                    homeButton.Enable();
+                    District = sManager.m_metaData.m_CityName;
                 }
                 else
                 {
-                    homeButton.text = "Homeless";
-                    homeButton.Disable();
+                    District = dManager.GetDistrictName(districtNo);
                 }
-
-                //Work
-                ushort workNo = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_workBuilding;
-                ItemClass.Level schoolLevel = cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].GetCurrentSchoolLevel(citizen);
-                if (schoolLevel != ItemClass.Level.None)
-                {
-                    workLabel.text = "Student: ";
-                }
-                else if (workNo == 0)
-                {
-                    workLabel.text = "Unemployed";
-                }
-                else
-                {
-                    workLabel.text = "Worker: ";
-                }
-                if (workNo != 0)
-                {
-                    workID.Building = workNo;
-                    Work = bManager.GetBuildingName(workNo, instanceID);
-                    workButton.text = this.Work;
-                    workButton.isVisible = true;
-                }
-                else
-                {
-                    workButton.isVisible = false;
-                }
+                summaryLabel.text = District + " resident";
 
                 //Status
                 Status = citizenInfo.m_citizenAI.GetLocalizedStatus(citizen, ref cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)], out targetID);
@@ -311,44 +218,36 @@ namespace CitizenTracker
                     targetButton.text = this.Target;
                     targetButton.isVisible = true;
                 }
-
-                //Happiness
-                string[] happinessLevels = new string[]
-                {
-                    "VeryUnhappy",
-                    "Unhappy",
-                    "Happy",
-                    "VeryHappy",
-                    "ExtremelyHappy"
-                };
-                Happiness = Citizen.GetHappiness((int)cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_health, (int)cManager.m_citizens.m_buffer[(int)((UIntPtr)citizen)].m_wellbeing);
-                happinessIcon.spriteName = "NotificationIcon" + happinessLevels[(int)Citizen.GetHappinessLevel(Happiness)];
             }
             else
             {
-                homeButton.text = "";
-                homeButton.Disable();
-                workLabel.text = "";
-                workButton.isVisible = false;
                 statusLabel.text = "Dead or moved away";
                 targetButton.isVisible = false;
                 happinessIcon.spriteName = "NotificationIconDead";
+                detailButton.isVisible = false;
             }
+        }
+
+        private void ShowDetail(UIComponent component, UIMouseEventParameter p)
+        {
+            var uiView = GameObject.FindObjectOfType<UIView>();
+            var trackerPanel = uiView.FindUIComponent("TrackerPanel");
+            DetailPanel detailPanel = uiView.GetComponentInChildren<DetailPanel>();
+            if (!detailPanel.isVisible)
+            {
+                detailPanel.relativePosition = new Vector2
+                (
+                    trackerPanel.relativePosition.x - 364,
+                    trackerPanel.relativePosition.y
+                );
+                detailPanel.isVisible = true;
+            }
+            detailPanel.instanceID = this.instanceID;
         }
 
         private void GoToCitizen(UIComponent component, UIMouseEventParameter p)
         {
             ToolsModifierControl.cameraController.SetTarget(instanceID,ToolsModifierControl.cameraController.transform.position,true);
-        }
-
-        private void GoToHome(UIComponent component, UIMouseEventParameter p)
-        {
-            ToolsModifierControl.cameraController.SetTarget(homeID, ToolsModifierControl.cameraController.transform.position, true);
-        }
-
-        private void GoToWork(UIComponent component, UIMouseEventParameter p)
-        {
-            ToolsModifierControl.cameraController.SetTarget(workID, ToolsModifierControl.cameraController.transform.position, true);
         }
 
         private void GoToTarget(UIComponent component, UIMouseEventParameter p)
@@ -358,6 +257,12 @@ namespace CitizenTracker
 
         private void Unfollow(UIComponent component, UIMouseEventParameter p)
         {
+            var uiView = GameObject.FindObjectOfType<UIView>();
+            DetailPanel detailPanel = uiView.GetComponentInChildren<DetailPanel>();
+            if (detailPanel.instanceID == this.instanceID)
+            {
+                detailPanel.isVisible = false;
+            }
             CitizenList.followList.Remove(instanceID);
             Destroy(this);
         }

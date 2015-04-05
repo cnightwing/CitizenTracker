@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using ICities;
 using ColossalFramework;
@@ -27,5 +26,8 @@ namespace CitizenTracker
 }
 
 //Notes to self:
-//Put actual age in a column
-//Tidy up columns
+//Put detail minipanels into their own classes
+//See if other things can be sensibly followed
+//Add a kill button?
+//Look to see what other information would be interesting
+//Find a way to better place the render icons
