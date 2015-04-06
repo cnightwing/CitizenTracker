@@ -100,13 +100,16 @@ namespace CitizenTracker
 
         public override void OnLevelUnloading()
         {
-            GameObject.Destroy(trackerPanel.gameObject);
-            GameObject.Destroy(trackerButton.gameObject);
-            GameObject.Destroy(renderButton.gameObject);
-            RenderManagers.Remove(renderManager);
-            GameObject.Destroy(followButton.gameObject);
-            GameObject.Destroy(detailPanel.gameObject);
-            CitizenList.followList.Clear();
+            if (GameObject.Find("TrackerPanel") != null)
+            {
+                GameObject.Destroy(trackerPanel.gameObject);
+                GameObject.Destroy(trackerButton.gameObject);
+                GameObject.Destroy(renderButton.gameObject);
+                RenderManagers.Remove(renderManager);
+                GameObject.Destroy(followButton.gameObject);
+                GameObject.Destroy(detailPanel.gameObject);
+                CitizenList.followList.Clear();
+            }
         }
     }
 }
