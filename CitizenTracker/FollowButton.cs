@@ -12,28 +12,22 @@ namespace CitizenTracker
 {
     public class FollowButton : UIButton
     {
-        private static UIView uiView = GameObject.FindObjectOfType<UIView>();
-
         public override void Start()
         {
-            this.width = 36;
-            this.height = 36;
-
-            this.normalBgSprite = "InfoIconBaseNormal";
-            this.focusedBgSprite = "InfoIconBaseNormal";
-            this.hoveredBgSprite = "InfoIconBaseNormal";
-            this.pressedBgSprite = "InfoIconBaseNormal";
-            this.normalFgSprite = "";
-            this.focusedFgSprite = "";
-            this.hoveredFgSprite = "";
-            this.pressedFgSprite = "";
-
             this.eventClick += ToggleFollow;
         }
 
         public override void Update()
         {
-            InstanceID instanceID = WorldInfoPanel.GetCurrentInstanceID();
+            InstanceID instanceID = new InstanceID();
+            if (this.parent.objectUserData == null)
+            {
+                instanceID = WorldInfoPanel.GetCurrentInstanceID();
+            }
+            else
+            {
+                instanceID = (InstanceID)this.parent.objectUserData;
+            }
             if (CitizenList.followList.Contains(instanceID))
             {
                 this.normalBgSprite = "InfoIconBaseNormal";
@@ -60,10 +54,20 @@ namespace CitizenTracker
 
         public void ToggleFollow(UIComponent component, UIMouseEventParameter eventParam)
         {
+            UIView uiView = GameObject.FindObjectOfType<UIView>();
             UIComponent trackerPanel = uiView.FindUIComponent("TrackerPanel");
-            FollowedPanel[] followedPanels = trackerPanel.GetComponentsInChildren<FollowedPanel>();
+            UIComponent containerPanel = trackerPanel.Find("UIScrollablePanel");
+            FollowedPanel[] followedPanels = containerPanel.GetComponentsInChildren<FollowedPanel>();
 
-            InstanceID instanceID = WorldInfoPanel.GetCurrentInstanceID();
+            InstanceID instanceID = new InstanceID();
+            if (this.parent.objectUserData == null)
+            {
+                instanceID = WorldInfoPanel.GetCurrentInstanceID();
+            }
+            else
+            {
+                instanceID = (InstanceID)this.parent.objectUserData;
+            }
             if (CitizenList.followList.Contains(instanceID))
             {
                 CitizenList.followList.Remove(instanceID);
@@ -78,7 +82,7 @@ namespace CitizenTracker
             else
             {
                 FollowedPanel newPanel;
-                newPanel = trackerPanel.AddUIComponent(typeof(FollowedPanel)) as FollowedPanel;
+                newPanel = containerPanel.AddUIComponent(typeof(FollowedPanel)) as FollowedPanel;
                 newPanel.instanceID = instanceID;
                 CitizenList.followList.Add(instanceID);
             }

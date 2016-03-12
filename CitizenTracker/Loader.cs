@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,112 +16,100 @@ namespace CitizenTracker
     public class Loader : LoadingExtensionBase
     {
         public TrackerButton trackerButton;
-        public UIPanel mainPanel;
-        public HeaderPanel headerPanel;
-        public UIPanel bodyPanel;
+        public RenderButton renderButton;
+        public TrackerRenderManager renderManager;
+        FastList<IRenderableManager> RenderManagers
+        {
+            get
+            {
+                return (FastList<IRenderableManager>)typeof(RenderManager).GetField("m_renderables", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            }
+        }
         public TrackerPanel trackerPanel;
+        public DetailPanel detailPanel;
         public FollowButton followButton;
 
         public override void OnLevelLoaded(LoadMode mode)
         {
-            var uiView = GameObject.FindObjectOfType<UIView>();
-
-            //Button to make the panel appear
-            trackerButton = uiView.AddUIComponent(typeof(TrackerButton)) as TrackerButton;
-            UIComponent escButton = uiView.FindUIComponent("Esc");
-            trackerButton.relativePosition = new Vector2
-            (
-                escButton.relativePosition.x,
-                escButton.relativePosition.y + 50
-            );
-			trackerButton.zOrder +=100;
-
-            //Panel, which is a scrollbar and panel, containing a headerpanel and panel, containing FollowedPanels.
-            mainPanel = uiView.AddUIComponent(typeof(UIPanel)) as UIPanel;
-            mainPanel.isVisible = false;
-            mainPanel.height = 396;
-            mainPanel.width = 1152;
-            mainPanel.backgroundSprite = "GenericPanel";
-            mainPanel.relativePosition = new Vector2
-            (
-                escButton.relativePosition.x + escButton.width - 1152,
-                escButton.relativePosition.y + 100
-            );
-            mainPanel.autoLayout = true;
-            mainPanel.autoLayoutDirection = LayoutDirection.Vertical;
-            mainPanel.autoLayoutStart = LayoutStart.TopLeft;
-
-            headerPanel = mainPanel.AddUIComponent(typeof(HeaderPanel)) as HeaderPanel;
-
-            bodyPanel = mainPanel.AddUIComponent(typeof(UIPanel)) as UIPanel;
-            bodyPanel.height = 360;
-            bodyPanel.width = 1152;
-            bodyPanel.autoLayout = true;
-            bodyPanel.autoLayoutDirection = LayoutDirection.Horizontal;
-            bodyPanel.autoLayoutStart = LayoutStart.TopLeft;
-
-            trackerPanel = bodyPanel.AddUIComponent(typeof(TrackerPanel)) as TrackerPanel;
-
-            UIScrollbar scrollbar = bodyPanel.AddUIComponent<UIScrollbar>();
-            scrollbar.width = 10;
-            scrollbar.height = bodyPanel.height;
-            scrollbar.orientation = UIOrientation.Vertical;
-            scrollbar.pivot = UIPivotPoint.TopRight;
-            scrollbar.AlignTo(scrollbar.parent, UIAlignAnchor.TopRight);
-            scrollbar.minValue = 0;
-            scrollbar.value = 0;
-            scrollbar.incrementAmount = 36;
-
-            UISlicedSprite trackSprite = scrollbar.AddUIComponent<UISlicedSprite>();
-            trackSprite.relativePosition = Vector2.zero;
-            trackSprite.autoSize = true;
-            trackSprite.size = trackSprite.parent.size;
-            trackSprite.fillDirection = UIFillDirection.Vertical;
-            trackSprite.spriteName = "ScrollbarTrack";
-
-            scrollbar.trackObject = trackSprite;
-
-            UISlicedSprite thumbSprite = scrollbar.AddUIComponent<UISlicedSprite>();
-            thumbSprite.relativePosition = Vector2.zero;
-            thumbSprite.autoSize = true;
-            thumbSprite.width = thumbSprite.parent.width;
-            thumbSprite.fillDirection = UIFillDirection.Vertical;
-            thumbSprite.spriteName = "ScrollbarThumb";
-
-            scrollbar.thumbObject = thumbSprite;
-
-            trackerPanel.verticalScrollbar = scrollbar;
-            trackerPanel.eventMouseWheel += (component, param) =>
+            if (mode == LoadMode.LoadGame | mode == LoadMode.NewGame)
             {
-                var sign = Math.Sign(param.wheelDelta);
-                trackerPanel.scrollPosition += new Vector2(0, sign * (-1) * 36);
-            };
+                var uiView = GameObject.FindObjectOfType<UIView>();
 
-            //Button to follow citizens
-            UIComponent citizenWorldInfoPanel = uiView.FindUIComponent("(Library) CitizenWorldInfoPanel");
-            followButton = citizenWorldInfoPanel.AddUIComponent(typeof(FollowButton)) as FollowButton;
-            UIComponent smileyFace = citizenWorldInfoPanel.Find("Happiness");
-            followButton.relativePosition = new Vector2
-            (
-                smileyFace.relativePosition.x + (smileyFace.width / 2.0f) - 18,
-                smileyFace.relativePosition.y + 40
-            );
+                //Button to make the panel appear
+                var infoPanel = uiView.FindUIComponent("InfoPanel");
+                trackerButton = infoPanel.AddUIComponent(typeof(TrackerButton)) as TrackerButton;
+                var happySprite = infoPanel.Find("Happiness");
+                trackerButton.relativePosition = new Vector2
+                (
+                    happySprite.relativePosition.x + 32,
+                    happySprite.relativePosition.y
+                );
 
-            //Add panels for existing follows
-            foreach(InstanceID follow in CitizenList.followList)
-            {
-                FollowedPanel newPanel;
-                newPanel = trackerPanel.AddUIComponent(typeof(FollowedPanel)) as FollowedPanel;
-                newPanel.instanceID = follow;
+                //Button to activate icons above the heads of followed citizens
+                renderButton = infoPanel.AddUIComponent(typeof(RenderButton)) as RenderButton;
+                renderButton.relativePosition = new Vector2
+                (
+                    trackerButton.relativePosition.x + 28,
+                    trackerButton.relativePosition.y
+                );
+
+                //Render manager to make that happen
+                renderManager = new TrackerRenderManager();
+                RenderManagers.Add(renderManager);
+
+                //Tracker Panel, positioned flush to the right of the screen just above the main toolbar
+                trackerPanel = uiView.AddUIComponent(typeof(TrackerPanel)) as TrackerPanel;
+                trackerPanel.height = 760;
+                trackerPanel.width = 370;
+                trackerPanel.isVisible = false;
+                float tfp = UIView.GetAView().GetScreenResolution().x / UIView.GetAView().GetScreenResolution().y;
+                var thumbnailBar = uiView.FindUIComponent("ThumbnailBar");
+                trackerPanel.transformPosition = new Vector3(tfp, 0, 0);
+                trackerPanel.relativePosition = new Vector3
+                (
+                    trackerPanel.relativePosition.x - trackerPanel.width,
+                    thumbnailBar.relativePosition.y - trackerPanel.height,
+                    0
+                );
+
+                //Detail Panel, positioned just to the left of Tracker Panel, but movable
+                detailPanel = uiView.AddUIComponent(typeof(DetailPanel)) as DetailPanel;
+                detailPanel.height = 360;
+                detailPanel.width = 360;
+                detailPanel.isVisible = false;
+                detailPanel.relativePosition = new Vector3
+                (
+                    trackerPanel.relativePosition.x - detailPanel.width - 4,
+                    trackerPanel.relativePosition.y,
+                    0
+                );
+
+                //Button to follow citizens put into citizen info panel
+                UIComponent citizenWorldInfoPanel = uiView.FindUIComponent("(Library) CitizenWorldInfoPanel");
+                followButton = citizenWorldInfoPanel.AddUIComponent(typeof(FollowButton)) as FollowButton;
+                followButton.width = 32;
+                followButton.height = 32;
+                UIComponent smileyFace = citizenWorldInfoPanel.Find("Happiness");
+                followButton.relativePosition = new Vector2
+                (
+                    smileyFace.relativePosition.x + (smileyFace.width / 2.0f) - 16,
+                    smileyFace.relativePosition.y + 40
+                );
             }
         }
 
         public override void OnLevelUnloading()
         {
-            GameObject.Destroy(mainPanel.gameObject);
-            GameObject.Destroy(trackerButton.gameObject);
-            GameObject.Destroy(followButton.gameObject);
-            CitizenList.followList.Clear();
+            if (GameObject.Find("TrackerPanel") != null)
+            {
+                GameObject.Destroy(trackerPanel.gameObject);
+                GameObject.Destroy(trackerButton.gameObject);
+                GameObject.Destroy(renderButton.gameObject);
+                RenderManagers.Remove(renderManager);
+                GameObject.Destroy(followButton.gameObject);
+                GameObject.Destroy(detailPanel.gameObject);
+                CitizenList.followList.Clear();
+            }
         }
     }
 }

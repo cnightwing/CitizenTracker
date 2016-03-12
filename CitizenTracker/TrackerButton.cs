@@ -8,17 +8,14 @@ using ColossalFramework;
 using ColossalFramework.UI;
 using UnityEngine;
 
-
 namespace CitizenTracker
 {
     public class TrackerButton : UIButton
     {
-        private static UIView uiView = GameObject.FindObjectOfType<UIView>();
-
         public override void Start()
         {
-            this.width = 46;
-            this.height = 46;
+            this.width = 28;
+            this.height = 28;
 
             this.normalBgSprite = "InfoIconBaseNormal";
             this.focusedBgSprite = "InfoIconBaseNormal";
@@ -34,11 +31,10 @@ namespace CitizenTracker
 
         public void TogglePanel(UIComponent component, UIMouseEventParameter eventParam)
         {
+            UIView uiView = GameObject.FindObjectOfType<UIView>();
             UIComponent trackerPanel = uiView.FindUIComponent("TrackerPanel");
-            UIComponent rightPanel = trackerPanel.parent;
-            UIComponent mainPanel = rightPanel.parent;
-            mainPanel.isVisible = !mainPanel.isVisible;
-            if (mainPanel.isVisible)
+            trackerPanel.isVisible = !trackerPanel.isVisible;
+            if (trackerPanel.isVisible)
             {
                 this.normalBgSprite = "InfoIconBaseFocused";
                 this.focusedBgSprite = "InfoIconBaseFocused";
@@ -48,12 +44,6 @@ namespace CitizenTracker
                 this.focusedFgSprite = "InfoIconHealth";
                 this.hoveredFgSprite = "InfoIconHealth";
                 this.pressedFgSprite = "InfoIconHealth";
-
-                Log.Message("Currently following:");
-                foreach (InstanceID id in CitizenList.followList)
-                {
-                    Log.Message(id.ToString());
-                }
             }
             else
             {
