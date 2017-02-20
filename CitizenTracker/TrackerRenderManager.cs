@@ -70,5 +70,10 @@ namespace CitizenTracker
         public void PopulateGroupData(int groupX, int groupZ, int layer, ref int vertexIndex, ref int triangleIndex, Vector3 groupPosition, RenderGroup.MeshData data, ref Vector3 min, ref Vector3 max, ref float maxRenderDistance, ref float maxInstanceDistance, ref bool requireSurfaceMaps) { }
 
         public void UndergroundOverlay(RenderManager.CameraInfo cameraInfo) { }
+
+        public void CheckReferences()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
